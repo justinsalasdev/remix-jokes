@@ -9,12 +9,16 @@ export const links: LinksFunction = () => {
 };
 
 type LoaderData = {
-  jokes: Joke[];
+  jokes: Pick<Joke, "id" | "name">[];
 };
 
 export const loader: LoaderFunction = async () => {
   const data: LoaderData = {
-    jokes: await db.joke.findMany(),
+    jokes: await db.joke.findMany({
+      take: 5,
+      select: { id: true, name: true },
+      orderBy: { createdAt: "desc" },
+    }),
   };
   return json(data);
 };
